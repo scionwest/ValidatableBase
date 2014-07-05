@@ -25,8 +25,8 @@ An example model, providing validation making sure the name is not blank.
                     }
                     return null;
                 },
-                "Name can not be blank!",
-                "Name");
+                failureMessage: "Name can not be blank!",
+                propertyName: "Name");
 
             base.Validate();
         }
