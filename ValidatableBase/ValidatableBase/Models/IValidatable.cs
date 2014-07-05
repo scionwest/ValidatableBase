@@ -17,10 +17,10 @@ namespace Scionwest.Validatable.Models
         Dictionary<string, List<IValidationMessage>> ValidationMessages { get; }
 
         /// <summary>
-        /// Registers an objects properties its validation Messages are accessible for observers to access.
+        /// Registers an objects properties so that its validation Messages are accessible for observers to access.
         /// </summary>
         /// <param name="propertyName">The name of the property you want to register.</param>
-        void RegisterProperty(string propertyName);
+        void RegisterProperty(params string[] propertyName);
 
         /// <summary>
         /// Adds the supplied validation message to the ValidationMessages collection.

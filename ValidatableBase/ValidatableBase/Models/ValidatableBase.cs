@@ -43,12 +43,15 @@ namespace Scionwest.Validatable.Models
         /// <summary>
         /// Registers an objects properties its validation Messages are accessible for observers to access.
         /// </summary>
-        /// <param name="propertyName">The name of the property you want to register.</param>
-        public void RegisterProperty(string propertyName)
+        /// <param name="propertyNames">The property names.</param>
+        public void RegisterProperty(params string[] propertyNames)
         {
-            if (!this.ValidationMessages.ContainsKey(propertyName))
+            foreach (string property in propertyNames)
             {
-                this.ValidationMessages[propertyName] = new List<IValidationMessage>();
+                if (!this.ValidationMessages.ContainsKey(property))
+                {
+                    this.ValidationMessages[property] = new List<IValidationMessage>();
+                }
             }
         }
 

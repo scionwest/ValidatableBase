@@ -20,8 +20,7 @@ namespace SampleUniversalApp.Models
 
         public User()
         {
-            this.RegisterProperty("Email");
-            this.RegisterProperty("Password");
+            this.RegisterProperty("Email", "Password");
         }
 
         /// <summary>
