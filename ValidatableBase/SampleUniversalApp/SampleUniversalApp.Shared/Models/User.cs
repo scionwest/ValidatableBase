@@ -18,6 +18,12 @@ namespace SampleUniversalApp.Models
         /// </summary>
         private string password = string.Empty;
 
+        public User()
+        {
+            this.RegisterProperty("Email");
+            this.RegisterProperty("Password");
+        }
+
         /// <summary>
         /// Gets the Email.
         /// </summary>

@@ -41,6 +41,18 @@ namespace Scionwest.Validatable.Models
         }
 
         /// <summary>
+        /// Registers an objects properties its validation Messages are accessible for observers to access.
+        /// </summary>
+        /// <param name="propertyName">The name of the property you want to register.</param>
+        public void RegisterProperty(string propertyName)
+        {
+            if (!this.ValidationMessages.ContainsKey(propertyName))
+            {
+                this.ValidationMessages[propertyName] = new List<IValidationMessage>();
+            }
+        }
+
+        /// <summary>
         /// Determines whether the object has any validation message Type's matching T for the the specified property.
         /// </summary>
         /// <typeparam name="T">A Type implementing IValidationMessage</typeparam>
