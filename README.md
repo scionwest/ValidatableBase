@@ -1,7 +1,7 @@
 ValidatableBase
 ===============
 
-Model Validation for Universal WinRT Apps. Sincye Universal WinRT apps targeting Windows 8.1 and Windows Phone 8.1 lack built in, easy to use data Validation, I wrote a quick model object that can be used to add validation to your apps.
+Model Validation for Universal WinRT Apps. Since Universal WinRT apps targeting Windows 8.1 and Windows Phone 8.1 lack built in, easy to use data Validation, I wrote a quick model object that can be used to add validation to your apps.
 
 An example model, providing validation making sure the name is not blank.
 
