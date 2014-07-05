@@ -1,39 +1,11 @@
-ValidatableBase
-===============
+﻿using Scionwest.Validatable.Models;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Text;
 
-Model Validation for Universal WinRT Apps. Sincye Universal WinRT apps targeting Windows 8.1 and Windows Phone 8.1 lack built in, easy to use data Validation, I wrote a quick model object that can be used to add validation to your apps.
-
-An example model, providing validation making sure the name is not blank.
-
-    public class ModelFixture : ValidatableBase
-    {
-        private string name;
-
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-
-        public override void Validate()
-        {
-            this.ValidateProperty((failureMessage) =>
-                {
-                    if (string.IsNullOrEmpty(this.Name))
-                    {
-                        return new ValidationErrorMessage(failureMessage);
-                    }
-                    return null;
-                },
-                "Name can not be blank!",
-                "Name");
-
-            base.Validate();
-        }
-    }
-
-## Advanced Example validating multiple business rules on a property, for multiple properties.
-
+namespace SampleUniversalApp.Models
+{
     public class User : ValidatableBase
     {
         /// <summary>
@@ -179,49 +151,4 @@ An example model, providing validation making sure the name is not blank.
             return null;
         }
     }
-
-## View Model validation checks
-
-This exposes validation methods to external objects as well. By inheriting from ValidatableBase, you can force validation checks on a model from within your view model.
-
-        public bool CanExecute(object parameter)
-        {
-            // Perform validation on the user.
-            this.AppUser.Validate();
-
-            // Check if there are any errors.
-            if (this.AppUser.HasValidationMessageType<ValidationErrorMessage>())
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-## Binding to the View
-
-Binding to the view is really easy, using one of the two provided converters.
-
-    <Application.Resources>
-        <converters:ValidationCollectionToSingleStringConverter x:Key="ValidationCollectionToSingleStringConverter" />
-        <converters:IValidationMessageCollectionToStringCollectionConverter x:Key="CollectionConverter" />
-    </Application.Resources>
-
-### Bind to a single error for a property.
-
-    <TextBlock x:Name="EmailValidationErrorTextBlock"
-                Text="{Binding Path=AppUser.ValidationMessages[Email], 
-								Converter={StaticResource ValidationCollectionToSingleStringConverter}}"
-                Foreground="Red" />
-
-### Bind to the entire collection of errors for a property
-
-    <ItemsControl ItemsSource="{Binding Path=AppUser.ValidationMessages[Password], 
-										Converter={StaticResource CollectionConverter}}">
-        <ItemsControl.ItemTemplate>
-            <DataTemplate>
-                <TextBlock Text="{Binding}"
-                            Foreground="Red" />
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
-    </ItemsControl>
+}

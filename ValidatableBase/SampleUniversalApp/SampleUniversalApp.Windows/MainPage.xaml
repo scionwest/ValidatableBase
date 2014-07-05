@@ -1,0 +1,72 @@
+﻿<Page x:Class="SampleUniversalApp.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:SampleUniversalApp"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:viewModels="using:SampleUniversalApp.ViewModels"
+      mc:Ignorable="d"
+      d:DataContext="{d:DesignInstance Type=viewModels:MainPageViewModel}">
+    <Page.DataContext>
+        <viewModels:MainPageViewModel />
+    </Page.DataContext>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0"
+                    Margin="20 20 0 0">
+            <TextBlock Text="Options for demonstrating Validation errors."
+                       FontSize="16" />
+            <TextBlock Text="Press Login while all fields are empty."
+                       FontSize="16" />
+            <TextBlock Text="Enter an email address improperly formatted."
+                       FontSize="16" />
+            <TextBlock Text="Enter a password with spaces"
+                       FontSize="16" />
+            <TextBlock Text="Enter a password less than 8 characters or greater than 16."
+                       FontSize="16" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+
+            <!-- Email input -->
+            <TextBlock Text="Email"
+                       Style="{StaticResource TitleTextBlockStyle}" />
+            <TextBox x:Name="EmailTextBox"
+                     Margin="0 5 0 0"
+                     MinWidth="200"
+                     Text="{Binding Path=AppUser.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock x:Name="EmailValidationErrorTextBlock"
+                       Text="{Binding Path=AppUser.ValidationMessages[Email], Converter={StaticResource ValidationCollectionToSingleStringConverter}}"
+                       Foreground="Red" />
+
+            <!-- Password input -->
+            <TextBlock Text="Password"
+                       Margin="0 30 0 0"
+                       Style="{StaticResource TitleTextBlockStyle}" />
+            <TextBox Margin="0 5 0 0"
+                     MinWidth="{Binding ElementName=EmailTextBox, Path=MinWidth}"
+                     Text="{Binding Path=AppUser.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <ItemsControl ItemsSource="{Binding Path=AppUser.ValidationMessages[Password], Converter={StaticResource CollectionConverter}}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"
+                                   Foreground="Red" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Login Test input -->
+            <Button Content="Login"
+                    Margin="0 10 0 0"
+                    Command="{Binding}" />
+        </StackPanel>
+
+    </Grid>
+</Page>
