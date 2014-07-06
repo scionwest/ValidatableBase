@@ -53,10 +53,10 @@ An example model, providing validation making sure the name is not blank.
         /// </summary>
         private string password = string.Empty;
 
-	public User()
-	{
-	    this.RegisterProperty("Email", "Password");
-	}
+        public User()
+        {
+            this.RegisterProperty("Email", "Password");
+        }
 
         /// <summary>
         /// Gets the Email.
