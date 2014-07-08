@@ -13,6 +13,7 @@ An example model, providing validation making sure the name is not blank.
         
         public ModelFixture()
         {
+            // Optional. Not required for validation to work. This will be deprecated in a future commit.
        	    this.RegisterProperty("Name");
         }
 
