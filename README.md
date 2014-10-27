@@ -10,6 +10,12 @@ An example model, providing validation making sure the name is not blank.
     public class ModelFixture : ValidatableBase
     {
         private string name;
+        
+        public ModelFixture()
+        {
+            // Optional. Not required for validation to work. This will be deprecated in a future commit.
+       	    this.RegisterProperty("Name");
+        }
 
         public string Name
         {
@@ -47,6 +53,11 @@ An example model, providing validation making sure the name is not blank.
         /// The Password backing field.
         /// </summary>
         private string password = string.Empty;
+
+        public User()
+        {
+            this.RegisterProperty("Email", "Password");
+        }
 
         /// <summary>
         /// Gets the Email.
