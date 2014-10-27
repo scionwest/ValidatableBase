@@ -94,7 +94,7 @@ namespace SampleUniversalApp.ViewModels
         {
             this.AppUser.RemoveValidationMessages();
             // Perform validation on the user's built in validation.
-            this.AppUser.Validate();
+            this.AppUser.ValidateAll();
 
             // Piggy-back on top of the user default validation with an additional level of validation in our view model.
             // We ensure the password and password confirmation matches.

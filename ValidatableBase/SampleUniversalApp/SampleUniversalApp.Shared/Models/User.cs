@@ -64,15 +64,6 @@ namespace SampleUniversalApp.Models
             }
         }
 
-        /// <summary>
-        /// Performs validation on the User.
-        /// </summary>
-        public void Validate()
-        {
-            // Validate all of our attribute based properties.
-            this.ValidateAll();
-        }
-
         [ValidationCustomHandlerDelegate(DelegateName = "ValidateEmailFormat")]
         private IValidationMessage ValidateEmailIsFormatted(IValidationMessage failureMessage, PropertyInfo property)
         {
@@ -94,6 +85,10 @@ namespace SampleUniversalApp.Models
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
         protected virtual void OnPropertyChanged(string propertyName = "")
         {
             var handler = PropertyChanged;
