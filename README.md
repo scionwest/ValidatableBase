@@ -3,6 +3,15 @@ ValidatableBase
 
 Model Validation for Universal WinRT Apps through delegate method invocation per-property or DataAnnotation styled attribute validation. Universal WinRT apps targeting Windows 8.1 and Windows Phone 8.1 lack built in, easy to use data Validation, so ValidatableBase was created.
 
+ValidatableBase Version 2.0 Released
+------------------------------------
+
+* With this release, a new DataAnnotation styled attribute validation system has been added.
+* Registering properties is no longer needed.
+* The library is now in a Portable Class Library, usable across all platforms that PCL's can run on. 
+  *   As a side-effect of this, the validation messages collection is no longer directly exposed. The underlying implementation is `Dictionary<string, IEnumerable<IValidationMessage>>` which requires conversion if you need to bind to the validation results. The example app includes an extension method that can be used to perform the conversion, for view models that want to expose validation to the view.
+* ValidatableBase now has a ValidationChanged event that you can subscribe to. Any time validation is changed, either by adding/removing messages or running validation, your view models can be notified.
+
 An example model, providing validation making sure the email property is not blank.
 
     public class User : ValidatableBase, INotifyPropertyChanged
