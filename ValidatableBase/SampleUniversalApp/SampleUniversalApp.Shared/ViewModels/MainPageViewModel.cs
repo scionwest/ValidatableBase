@@ -1,24 +1,33 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using SampleUniversalApp.Models;
-using SampleUniversalApp.Extensions;
-using Sullinger.ValidatableBase.Models;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="MainPageViewModel.cs" company="Sully">
+//     Copyright (c) Johnathon Sullinger. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace SampleUniversalApp.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Windows.Input;
+    using SampleUniversalApp.Extensions;
+    using SampleUniversalApp.Models;
+    using Sullinger.ValidatableBase.Models;
+
     /// <summary>
     /// The view model associated with the MainPage view.
     /// </summary>
     public class MainPageViewModel : ICommand, INotifyPropertyChanged
     {
+        /// <summary>
+        /// Backing field for the PasswordConfirmation property.
+        /// </summary>
         private string passwordConfirmation = string.Empty;
 
+        /// <summary>
+        /// Backing field for the view models wrapper around the model validations.
+        /// </summary>
         private Dictionary<string, ObservableCollection<IValidationMessage>> validationMessages;
 
         /// <summary>
@@ -45,6 +54,9 @@ namespace SampleUniversalApp.ViewModels
         /// </summary>
         public User AppUser { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the PasswordConfirmation that the user must enter. Must match the AppUser.Password property.
+        /// </summary>
         public string PasswordConfirmation
         {
             get
@@ -60,7 +72,7 @@ namespace SampleUniversalApp.ViewModels
         }
 
         /// <summary>
-        /// A wrapper around the non-observable collection of validation messages stored in our model.
+        /// Gets a wrapper around the non-observable collection of validation messages stored in our model.
         /// </summary>
         public Dictionary<string, ObservableCollection<IValidationMessage>> ValidationMessages
         {
@@ -79,8 +91,8 @@ namespace SampleUniversalApp.ViewModels
         /// <summary>
         /// This always returns true.
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
+        /// <param name="parameter">The command does not require a parameter to be supplied.</param>
+        /// <returns>Always returns true</returns>
         public bool CanExecute(object parameter)
         {
             return true;
@@ -98,7 +110,7 @@ namespace SampleUniversalApp.ViewModels
             // Piggy-back on top of the user default validation with an additional level of validation in our view model.
             // We ensure the password and password confirmation matches.
             this.AppUser.ValidateProperty(
-                () => PasswordConfirmation.Equals(this.AppUser.Password),
+                () => this.PasswordConfirmation.Equals(this.AppUser.Password),
                 new ValidationErrorMessage("Passwords do not match!"),
                     "Password");
 
@@ -118,6 +130,10 @@ namespace SampleUniversalApp.ViewModels
             return;
         }
 
+        /// <summary>
+        /// Notifies observers that a specific property has changed.
+        /// </summary>
+        /// <param name="propertyName">The property that has changed</param>
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChangedEventHandler handler = this.PropertyChanged;
@@ -131,6 +147,9 @@ namespace SampleUniversalApp.ViewModels
             this.OnCanExecuteChanged();
         }
 
+        /// <summary>
+        /// Notifies the view that the command needs to be re-evaluated
+        /// </summary>
         protected virtual void OnCanExecuteChanged()
         {
             EventHandler handler = this.CanExecuteChanged;

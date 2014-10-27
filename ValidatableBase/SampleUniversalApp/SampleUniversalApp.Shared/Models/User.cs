@@ -1,14 +1,24 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
-using Sullinger.ValidatableBase.Models;
-using System.ComponentModel;
-using Sullinger.ValidatableBase.Models.ValidationRules;
-using System.Reflection;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="User.cs" company="Sully">
+//     Copyright (c) Johnathon Sullinger. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace SampleUniversalApp.Models
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text;
+    using Sullinger.ValidatableBase.Models;
+    using Sullinger.ValidatableBase.Models.ValidationRules;
+
+    /// <summary>
+    /// The model used to hold a user email and password.
+    /// The INotifyPropertyChanged implementation should probably be pulled out in to a Facade at some-point.
+    /// </summary>
     public class User : ValidatableBase, INotifyPropertyChanged
     {
         /// <summary>
@@ -22,11 +32,13 @@ namespace SampleUniversalApp.Models
         private string password = string.Empty;
 
         /// <summary>
-        /// Gets the Email.
+        /// Raised when a property has changed
         /// </summary>
-        /// <value>
-        /// The Email.
-        /// </value>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Gets or sets the Email.
+        /// </summary>
         [ValidateObjectHasValue(FailureMessage = "E-Mail can not be left blank.", 
             ValidationMessageType = typeof(ValidationErrorMessage))]
         [ValidateWithCustomHandler(DelegateName = "ValidateEmailFormat", 
@@ -47,11 +59,8 @@ namespace SampleUniversalApp.Models
         }
 
         /// <summary>
-        /// Gets the Password.
-        /// </summary>
-        /// <value>
-        /// The Password.
-        /// </value>        
+        /// Gets or sets the Password.
+        /// </summary>      
         [ValidateStringIsGreaterThan(GreaterThanValue = 6, 
             ValidateIfMemberValueIsValid = "Email",  
             FailureMessage = "Password must be greater than 6 characters.", 
@@ -74,6 +83,26 @@ namespace SampleUniversalApp.Models
             }
         }
 
+        /// <summary>
+        /// Raised when a property has changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the property that was changed.</param>
+        protected virtual void OnPropertyChanged(string propertyName = "")
+        {
+            var handler = this.PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        /// <summary>
+        /// Validates that the users email address is valid.
+        /// </summary>
+        /// <param name="failureMessage">The message that will be returned if validation fails.</param>
+        /// <param name="property">The property info fetched when the model was registered for validation</param>
+        /// <returns>Returns a validation message if validation fails. Otherwise null is returned.</returns>
         [ValidationCustomHandlerDelegate(DelegateName = "ValidateEmailFormat")]
         private IValidationMessage ValidateEmailIsFormatted(IValidationMessage failureMessage, PropertyInfo property)
         {
@@ -91,22 +120,6 @@ namespace SampleUniversalApp.Models
             }
 
             return null;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="propertyName"></param>
-        protected virtual void OnPropertyChanged(string propertyName = "")
-        {
-            var handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
     }
 }

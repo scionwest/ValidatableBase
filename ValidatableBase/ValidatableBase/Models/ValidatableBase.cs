@@ -48,7 +48,7 @@ namespace Sullinger.ValidatableBase.Models
         /// <param name="message">The message.</param>
         /// <param name="property">The property.</param>
         /// <exception cref="System.ArgumentOutOfRangeException">property;You must supply a property name when adding a new validation message to this instance.</exception>
-        public virtual void AddValidationMessage(IValidationMessage message, string property)
+        public void AddValidationMessage(IValidationMessage message, string property)
         {
             if (string.IsNullOrEmpty(property))
             {
@@ -262,8 +262,6 @@ namespace Sullinger.ValidatableBase.Models
             {
                 this.PerformValidation(rule, property);
             }
-
-            this.OnValidationChanged(new ValidationChangedEventArgs(propertyName, this.ValidationMessages[propertyName]));
         }
 
         /// <summary>
