@@ -1,48 +1,20 @@
 ValidatableBase
 ===============
 
-Model Validation for Universal WinRT Apps. Since Universal WinRT apps targeting Windows 8.1 and Windows Phone 8.1 lack built in, easy to use data Validation, I wrote a quick model object that can be used to add validation to your apps.
+Model Validation for Universal WinRT Apps through delegate method invocation per-property or DataAnnotation styled attribute validation. Universal WinRT apps targeting Windows 8.1 and Windows Phone 8.1 lack built in, easy to use data Validation, so ValidatableBase was created.
 
-For information on why I went this direction, you can read my blog post on it [HERE](http://www.sullinger.us/blog/2014/7/4/custom-object-validation-in-winrt)
+An example model, providing validation making sure the email property is not blank.
 
-An example model, providing validation making sure the name is not blank.
-
-    public class ModelFixture : ValidatableBase
+    public class User : ValidatableBase, INotifyPropertyChanged
     {
-        private string name;
-        
-        public ModelFixture()
-        {
-            // Optional. Not required for validation to work. This will be deprecated in a future commit.
-       	    this.RegisterProperty("Name");
-        }
-
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-
-        public override void Validate()
-        {
-            this.ValidateProperty((failureMessage) =>
-                {
-                    if (string.IsNullOrEmpty(this.Name))
-                    {
-                        return new ValidationErrorMessage(failureMessage);
-                    }
-                    return null;
-                },
-                failureMessage: "Name can not be blank!",
-                propertyName: "Name");
-
-            base.Validate();
-        }
-    }
+        [ValidateObjectHasValue(FailureMessage = "E-Mail can not be left blank.", ValidationMessageType = typeof(ValidationErrorMessage))]
+        public string Email { get; set; }
 
 ## Advanced Example validating multiple business rules on a property, for multiple properties.
 
-    public class User : ValidatableBase
+In this example, the User model has been extended a bit. Now we validate that the E-mail address is not blank and that it is in a valid format. Once E-mail validation is successful, the model will validate its Password property.
+
+    public class User : ValidatableBase, INotifyPropertyChanged
     {
         /// <summary>
         /// The Email backing field.
@@ -54,161 +26,125 @@ An example model, providing validation making sure the name is not blank.
         /// </summary>
         private string password = string.Empty;
 
-        public User()
-        {
-            this.RegisterProperty("Email", "Password");
-        }
-
         /// <summary>
         /// Gets the Email.
         /// </summary>
-        /// <value>
-        /// The Email.
-        /// </value>
+        [ValidateObjectHasValue(FailureMessage = "E-Mail can not be left blank.", ValidationMessageType = typeof(ValidationErrorMessage))]
+        [ValidateWithCustomHandler(DelegateName = "ValidateEmailFormat", ValidationMessageType = typeof(ValidationErrorMessage), FailureMessage = "Email address is not properly formatted.")]
         public string Email
         {
-            get 
+            get
             {
                 return this.email;
             }
 
-            set 
-            { 
+            set
+            {
                 this.email = value;
                 this.OnPropertyChanged("Email");
             }
         }
         /// <summary>
         /// Gets the Password.
-        /// </summary>
-        /// <value>
-        /// The Password.
-        /// </value>
+        /// </summary>     
+        [ValidateStringIsGreaterThan(GreaterThanValue = 6, ValidateIfMemberValueIsValid = "Email",  FailureMessage = "Password must be greater than 6 characters.", ValidationMessageType = typeof(ValidationErrorMessage))]
+        [ValidateStringIsLessThan(LessThanValue = 20, ValidateIfMemberValueIsValid = "Email", FailureMessage = "Password must be less than 20 characters.", ValidationMessageType = typeof(ValidationErrorMessage))]
         public string Password
         {
-            get 
-            { 
-                return this.password; 
+            get
+            {
+                return this.password;
             }
 
-            set 
-            { 
+            set
+            {
                 this.password = value;
                 this.OnPropertyChanged("Password");
             }
         }
 
-        /// <summary>
-        /// Performs validation on the User.
-        /// </summary>
-        public override void Validate()
-        {
-            this.ValidateProperty(this.ValidateEmailIsNotEmpty, "Invalid Email Address.", "Email");
-            this.ValidateProperty(this.ValidateEmailIsFormatted, "Email Address is not in the correct format.", "Email");
-            this.ValidateProperty(this.ValidatePasswordIsNotEmpty, "Password can not be empty.", "Password");
-            this.ValidateProperty(this.ValidatePasswordIsToShort, "Password must be greater than 8 characters.", "Password");
-            this.ValidateProperty(this.ValidateIfPasswordContainsSpaces, "Password must not contain spaces.", "Password");
-
-            base.Validate();
-        }
-        
-        /// <summary>
-        /// Validates that the email is not empty.
-        /// </summary>
-        /// <param name="failureMessage">The message to supply the error collection if validation fails.</param>
-        /// <returns>Returns a ValidationErrorMessage if validation fails. Otherwise, null is returned.</returns>
-        private IValidationMessage ValidateEmailIsNotEmpty(string failureMessage)
-        {
-            if (string.IsNullOrEmpty(this.Email))
-            {
-                return new ValidationErrorMessage(failureMessage);
-            }
-
-            return null;
-        }
-
-        private IValidationMessage ValidateEmailIsFormatted(string failureMessage)
+        [ValidationCustomHandlerDelegate(DelegateName = "ValidateEmailFormat")]
+        private IValidationMessage ValidateEmailIsFormatted(IValidationMessage failureMessage, PropertyInfo property)
         {
             string[] addressParts = this.Email.Split('@');
 
             if (addressParts.Length < 2)
             {
-                var msg = new ValidationErrorMessage(failureMessage);
-                return msg;
+                return failureMessage;
             }
 
             string[] domainPiece = addressParts.LastOrDefault().Split('.');
             if (domainPiece.Length < 2)
             {
-                var msg = new ValidationErrorMessage(failureMessage);
-                return msg;
+                return failureMessage;
             }
 
             return null;
         }
 
-        /// <summary>
-        /// Validates that the password is not empty.
-        /// </summary>
-        /// <param name="failureMessage">The message to supply the error collection if validation fails.</param>
-        /// <returns>Returns a ValidationErrorMessage if validation fails. Otherwise, null is returned.</returns>
-        private IValidationMessage ValidatePasswordIsNotEmpty(string failureMessage)
-        {
-            if (string.IsNullOrEmpty(this.Password))
-            {
-                return new ValidationErrorMessage(failureMessage);
-            }
-
-            return null;
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="failureMessage">The message to supply the error collection if validation fails.</param>
-        /// <returns>Returns a ValidationErrorMessage if validation fails. Otherwise, null is returned.</returns>
-        private IValidationMessage ValidatePasswordIsToShort(string failureMessage)
+        /// <param name="propertyName"></param>
+        protected virtual void OnPropertyChanged(string propertyName = "")
         {
-            if (this.Password.Length < 8)
+            var handler = PropertyChanged;
+
+            if (handler != null)
             {
-                return new ValidationErrorMessage(failureMessage);
+                handler(this, new PropertyChangedEventArgs(propertyName));
             }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Tests to see if the password contains any spaces.
-        /// </summary>
-        /// <param name="failureMessage"></param>
-        /// <returns></returns>
-        private IValidationMessage ValidateIfPasswordContainsSpaces(string failureMessage)
-        {
-            if (this.Password.Contains(' '))
-            {
-                return new ValidationErrorMessage(failureMessage);
-            }
-
-            return null;
         }
     }
 
 ## View Model validation checks
 
-This exposes validation methods to external objects as well. By inheriting from ValidatableBase, you can force validation checks on a model from within your view model.
+This exposes validation methods to external objects as well. By letting your model inherit from ValidatableBase, you can force validation checks on a model from within your view model.
 
-        public bool CanExecute(object parameter)
+        public void Execute(object parameter)
         {
-            // Perform validation on the user.
-            this.AppUser.Validate();
+            // Perform validation on the user model's built in validation.
+            this.AppUser.ValidateAll();
 
             // Check if there are any errors.
-            if (this.AppUser.HasValidationMessageType<ValidationErrorMessage>())
+            if (this.AppUser.HasValidationMessages<ValidationErrorMessage>())
             {
-                return false;
+                return;
             }
 
-            return true;
+            // Do stuff.
+        }
+        
+## View Model imposed rules
+
+You can perform cross-property validation within your view model as well. Our model does not contain a PasswordConfirmation property, since it does not belong in it. Instead for our example, the PasswordConfirmation property will exist in the View Model. We can execute the User model's validation, then execute additional validation on-top of it that the View Model owns.
+
+In the following example, we perform validation injection on the model. The view model creates an anonymous method, and assigns the result of the validation to the Model's "Password" property. So any item data-bound to the Password validation collection on the model, will see the failed validation assigned by the view model.
+
+        public void Execute(object parameter)
+        {
+            // Perform validation on the user's built in validation.
+            this.AppUser.ValidateAll();
+
+            // Piggy-back on top of the user default validation with an additional level of validation in our view model.
+            // We ensure the Model's password and View Model's password confirmation matches.
+            this.AppUser.ValidateProperty(
+                () => PasswordConfirmation.Equals(this.AppUser.Password),
+                new ValidationErrorMessage("Passwords do not match!"),
+                    "Password");
+
+            // Check if there are any errors.
+            // We assign the reference to the view models, which contains an observable collection for the UI.
+            if (this.AppUser.HasValidationMessages<ValidationErrorMessage>())
+            {
+                this.ValidationMessages = this.AppUser.GetValidationMessages().ConvertValidationMessagesToObservable();
+                return;
+            }
+
+            // Do stuff.
+            return;
         }
 
 ## Binding to the View
@@ -238,3 +174,9 @@ Binding to the view is really easy, using one of the two provided converters.
             </DataTemplate>
         </ItemsControl.ItemTemplate>
     </ItemsControl>
+
+## Attribute validation types
+
+The library comes with support for validating minimum and maximum numeric values, ranges of numeric values, string length, null objects, empty collections, empty or null strings and custom delegate method invocation.
+
+If you want to write your own attribute validation, you just need to implement `IValidationRule` and then decorate your object.
