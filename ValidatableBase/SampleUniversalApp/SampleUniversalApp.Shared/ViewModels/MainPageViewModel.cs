@@ -92,7 +92,6 @@ namespace SampleUniversalApp.ViewModels
         /// <param name="parameter">The command does not require a parameter to be supplied.</param>
         public void Execute(object parameter)
         {
-            this.AppUser.RemoveValidationMessages();
             // Perform validation on the user's built in validation.
             this.AppUser.ValidateAll();
 
