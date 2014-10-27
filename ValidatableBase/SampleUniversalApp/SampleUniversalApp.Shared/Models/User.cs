@@ -27,8 +27,11 @@ namespace SampleUniversalApp.Models
         /// <value>
         /// The Email.
         /// </value>
-        [ValidateObjectHasValue(FailureMessage = "E-Mail can not be left blank.", ValidationMessageType = typeof(ValidationErrorMessage))]
-        [ValidateWithCustomHandler(DelegateName = "ValidateEmailFormat", ValidationMessageType = typeof(ValidationErrorMessage), FailureMessage = "Email address is not properly formatted.")]
+        [ValidateObjectHasValue(FailureMessage = "E-Mail can not be left blank.", 
+            ValidationMessageType = typeof(ValidationErrorMessage))]
+        [ValidateWithCustomHandler(DelegateName = "ValidateEmailFormat", 
+            ValidationMessageType = typeof(ValidationErrorMessage), 
+            FailureMessage = "Email address is not properly formatted.")]
         public string Email
         {
             get
@@ -42,14 +45,21 @@ namespace SampleUniversalApp.Models
                 this.OnPropertyChanged("Email");
             }
         }
+
         /// <summary>
         /// Gets the Password.
         /// </summary>
         /// <value>
         /// The Password.
         /// </value>        
-        [ValidateStringIsGreaterThan(GreaterThanValue = 6, ValidateIfMemberValueIsValid = "Email",  FailureMessage = "Password must be greater than 6 characters.", ValidationMessageType = typeof(ValidationErrorMessage))]
-        [ValidateStringIsLessThan(LessThanValue = 20, ValidateIfMemberValueIsValid = "Email", FailureMessage = "Password must be less than 20 characters.", ValidationMessageType = typeof(ValidationErrorMessage))]
+        [ValidateStringIsGreaterThan(GreaterThanValue = 6, 
+            ValidateIfMemberValueIsValid = "Email",  
+            FailureMessage = "Password must be greater than 6 characters.", 
+            ValidationMessageType = typeof(ValidationErrorMessage))]
+        [ValidateStringIsLessThan(LessThanValue = 20, 
+            ValidateIfMemberValueIsValid = "Email", 
+            FailureMessage = "Password must be less than 20 characters.", 
+            ValidationMessageType = typeof(ValidationErrorMessage))]
         public string Password
         {
             get
