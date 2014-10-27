@@ -27,7 +27,7 @@ namespace SampleUniversalApp.Models
         /// <value>
         /// The Email.
         /// </value>
-        [ValidateValueIsNotNull(FailureMessage = "E-Mail can not be left blank.", ValidationMessageType = typeof(ValidationErrorMessage))]
+        [ValidateObjectHasValue(FailureMessage = "E-Mail can not be left blank.", ValidationMessageType = typeof(ValidationErrorMessage))]
         [ValidateWithCustomHandler(DelegateName = "ValidateEmailFormat", ValidationMessageType = typeof(ValidationErrorMessage), FailureMessage = "Email address is not properly formatted.")]
         public string Email
         {

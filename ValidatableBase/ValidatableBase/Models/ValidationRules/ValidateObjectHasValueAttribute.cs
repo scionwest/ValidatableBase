@@ -10,7 +10,7 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
     /// If the value is a string, it will check if the string is empty or null.
     /// If the value is an ICollection, it will check if it is empty or not.
     /// </summary>
-    public class ValidateValueIsNotNullAttribute : ValidationAttribute
+    public class ValidateObjectHasValueAttribute : ValidationAttribute
     {
         /// <summary>
         /// Validates the specified property.
