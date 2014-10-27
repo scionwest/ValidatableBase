@@ -109,6 +109,10 @@ namespace SampleUniversalApp.ViewModels
                 this.ValidationMessages = this.AppUser.GetValidationMessages().ConvertValidationMessagesToObservable();
                 return;
             }
+            else
+            {
+                this.ValidationMessages.AsParallel().ForAll(item => item.Value.Clear());
+            }
 
             // Do stuff.
             return;
