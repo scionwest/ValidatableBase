@@ -1,7 +1,7 @@
-﻿namespace Scionwest.Validatable.Models
+﻿namespace Sullinger.ValidatableBase.Models
 {
     /// <summary>
-    /// An implementation of IValidationMessage that can be used for error messages
+    /// An implementation of IMessage that can be used for error messages
     /// </summary>
     public class ValidationErrorMessage : IValidationMessage
     {

@@ -1,12 +1,11 @@
-﻿<Application
-    x:Class="SampleUniversalApp.App"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SampleUniversalApp"
-    xmlns:converters="using:Scionwest.Validatable.Converters">
+﻿<Application x:Class="SampleUniversalApp.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:SampleUniversalApp"
+             xmlns:converters="using:Sullinger.ValidatableBase.Converters">
 
     <Application.Resources>
         <converters:ValidationCollectionToSingleStringConverter x:Key="ValidationCollectionToSingleStringConverter" />
-        <converters:IValidationMessageCollectionToStringCollectionConverter x:Key="CollectionConverter" />
+        <converters:IMessageCollectionToStringCollectionConverter x:Key="CollectionConverter" />
     </Application.Resources>
 </Application>

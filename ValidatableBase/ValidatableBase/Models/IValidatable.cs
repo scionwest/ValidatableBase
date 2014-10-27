@@ -1,62 +1,121 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Scionwest.Validatable.Models
+﻿//-----------------------------------------------------------------------
+// <copyright file="IValidatable.cs" company="Sully">
+//     Copyright (c) Johnathon Sullinger. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace Sullinger.ValidatableBase.Models
 {
+    using System;
+    using System.Collections.Generic;
+    using Sullinger.ValidatableBase.Models.ValidationRules;
+
     /// <summary>
-    /// Provides a contract to objects wanting to support data validation.
+    /// Provides methods for creating a validatable concrete Type.
     /// </summary>
     public interface IValidatable
-    {
+    {		
         /// <summary>
-        /// Gets the validation messages.
+        /// Occurs when the instances validation state has changed.
         /// </summary>
-        /// <value>
-        /// The validation messages.
-        /// </value>
-        Dictionary<string, List<IValidationMessage>> ValidationMessages { get; }
+        event EventHandler<ValidationChangedEventArgs> ValidationChanged;
 
         /// <summary>
-        /// Registers an objects properties so that its validation Messages are accessible for observers to access.
-        /// </summary>
-        /// <param name="propertyName">The name of the property you want to register.</param>
-        void RegisterProperty(params string[] propertyName);
-
-        /// <summary>
-        /// Adds the supplied validation message to the ValidationMessages collection.
+        /// Adds a validation message to the instance.
         /// </summary>
         /// <param name="message">The message.</param>
-        /// <param name="property">The property this validation was performed against.</param>
-        void AddValidationMessage(IValidationMessage message, string property = "");
+        /// <param name="property">The property.</param>
+        void AddValidationMessage(IValidationMessage message, string property);
 
         /// <summary>
-        /// Removes the validation message from the ValidationMessages collection.
+        /// Removes all of the instances validation messages.
+        /// </summary>
+        void RemoveValidationMessages();
+
+        /// <summary>
+        /// Removes all of the instances validation messages for the given property.
+        /// </summary>
+        /// <param name="property">The property.</param>
+        void RemoveValidationMessages(string property);
+
+        /// <summary>
+        /// Removes the given validation message.
         /// </summary>
         /// <param name="message">The message.</param>
-        /// <param name="property">The property this validation was performed against.</param>
-        void RemoveValidationMessage(string message, string property = "");
+        /// <param name="property">The property.</param>
+        void RemoveValidationMessage(IValidationMessage message, string property);
 
         /// <summary>
-        /// Removes all of the validation messages associated to the supplied property from the ValidationMessages collection.
+        /// Determines whether this instance has validation messages for the specified property.
         /// </summary>
-        /// <param name="property">The property this validation was performed against.</param>
-        void RemoveValidationMessages(string property = "");
+        /// <param name="property">The property.</param>
+        /// <returns>Returns true if validation messages exist for the given property.</returns>
+        bool HasValidationMessages(string property = "");
 
         /// <summary>
-        /// Determines whether the object has any validation message Type's matching T for the the specified property.
+        /// Determines whether this instance has validation messages for the specified property, whose IMessage implementation matches the Type given.
         /// </summary>
-        /// <typeparam name="T">A Type implementing IValidationMessage</typeparam>
-        /// <param name="property">The property this validation was performed against.</param>
-        /// <returns></returns>
-        bool HasValidationMessageType<T>(string property = "") where T : IValidationMessage, new();
+        /// <param name="messageType">Type of the message.</param>
+        /// <param name="property">The property.</param>
+        /// <returns>Returns true if validation messages exist for the given property.</returns>
+        bool HasValidationMessages(Type messageType, string property = "");
 
         /// <summary>
-        /// Validates the specified property.
+        /// Determines whether this instance has validation messages for the specified property, whose IMessage implementation matches the Type given.
+        /// </summary>
+        /// <typeparam name="TMessage">The type of the message.</typeparam>
+        /// <param name="property">The property.</param>
+        /// <returns>Returns true if validation messages exist for the given property.</returns>
+        bool HasValidationMessages<TMessage>(string property = "") where TMessage : IValidationMessage, new();
+
+        /// <summary>
+        /// Gets a key/value representation of this instances validation messages.
+        /// </summary>
+        /// <returns>Returns a key/value pair. The key represents the instances property names while the value holds a collection of validation messages for the property.</returns>
+        Dictionary<string, IEnumerable<IValidationMessage>> GetValidationMessages();
+
+        /// <summary>
+        /// Gets the validation messages for the given property..
+        /// </summary>
+        /// <param name="property">The property.</param>
+        /// <returns>Returns a collection of validation messages.</returns>
+        IEnumerable<IValidationMessage> GetValidationMessages(string property);
+
+        /// <summary>
+        /// Performs validation on all of the instances properties that are eligible for validation.
+        /// </summary>
+        void ValidateAll();
+
+        /// <summary>
+        /// Validates the specified property if the property is decorated with an IValidationRule attribute.
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        void ValidateProperty(string propertyName = "");
+
+        /// <summary>
+        /// Validates the specified property via the supplied method delegate.
         /// </summary>
         /// <param name="validationDelegate">The validation delegate.</param>
         /// <param name="failureMessage">The failure message.</param>
-        /// <param name="property">The property this validation was performed against.</param>
-        /// <returns>Returns a validation message if the validation failed. Otherwise, null is returned.</returns>
-        IValidationMessage ValidateProperty(Func<string, IValidationMessage> validationDelegate, string failureMessage, string propertyName = "");
+        /// <param name="propertyName">Name of the property.</param>
+        /// <param name="validationProxy">The validation proxy.</param>
+        /// <returns>Returns an IMessage if validation was not successful, otherwise null is returned to indicate success.</returns>
+        IValidationMessage ValidateProperty(Func<bool> validationDelegate, IValidationMessage failureMessage, string propertyName, IValidatable validationProxy = null);
+
+        /// <summary>
+        /// Refreshes the validation.
+        /// </summary>
+        /// <param name="property">The property.</param>
+        void RefreshValidation(string property);
+
+        /// <summary>
+        /// Performs the given validation rule for the specified property.
+        /// </summary>
+        /// <param name="rule">The rule.</param>
+        /// <param name="property">The property.</param>
+        /// <param name="validationProxy">
+        /// A validation proxy can be specified. 
+        /// When supplied, the validation rule and any errors associated with it will be stored within the proxy object instead of this instance.
+        /// </param>
+        void PerformValidation(IValidationRule rule, string property, IValidatable validationProxy = null);
     }
 }

@@ -2,7 +2,7 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{09FE5F5D-E347-4DB0-ABFB-F265A4A3ECD5}</ProjectGuid>
@@ -13,8 +13,8 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkProfile>Profile32</TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile344</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,18 +37,26 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <TargetPlatform Include="WindowsPhoneApp, Version=8.1" />
-    <TargetPlatform Include="Windows, Version=8.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Converters\IValidationMessageCollectionToStringCollectionConverter.cs" />
-    <Compile Include="Converters\ValidationCollectionToSingleStringConverter.cs" />
-    <Compile Include="Models\IValidatable.cs" />
-    <Compile Include="Models\IValidationMessage.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Models\ValidatableBase.cs" />
     <Compile Include="Models\ValidationErrorMessage.cs" />
+    <Compile Include="Models\IValidationMessage.cs" />
+    <Compile Include="Models\IValidatable.cs" />
+    <Compile Include="Models\ValidatableBase.cs" />
+    <Compile Include="Models\ValidationChangedEventArgs.cs" />
+    <Compile Include="Models\ValidationRules\IValidationRule.cs" />
+    <Compile Include="Models\ValidationRules\ValidateNumberHasMaximumValueAttribute.cs" />
+    <Compile Include="Models\ValidationRules\ValidateNumberHasMinimumValueAttribute.cs" />
+    <Compile Include="Models\ValidationRules\ValidateNumberInRangeAttribute.cs" />
+    <Compile Include="Models\ValidationRules\ValidateNumberIsGreaterThanAttribute.cs" />
+    <Compile Include="Models\ValidationRules\ValidateNumberIsLessThanAttribute.cs" />
+    <Compile Include="Models\ValidationRules\ValidateStringIsGreaterThanAttribute.cs" />
+    <Compile Include="Models\ValidationRules\ValidateStringIsLessThanAttribute.cs" />
+    <Compile Include="Models\ValidationRules\ValidateObjectHasValueAttribute.cs" />
+    <Compile Include="Models\ValidationRules\ValidateWithCustomHandlerAttribute.cs" />
+    <Compile Include="Models\ValidationRules\ValidationAttribute.cs" />
+    <Compile Include="Models\ValidationRules\ValidationCustomHandlerDelegate.cs" />
+    <Compile Include="Models\ValidationRules\ValidationNumberDataTypes.cs" />
     <Compile Include="Models\ValidationWarningMessage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

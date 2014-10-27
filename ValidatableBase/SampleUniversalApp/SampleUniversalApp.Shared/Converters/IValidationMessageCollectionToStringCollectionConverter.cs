@@ -1,13 +1,13 @@
-﻿using Scionwest.Validatable.Models;
+﻿using Sullinger.ValidatableBase.Models;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml.Data;
 
-namespace Scionwest.Validatable.Converters
+namespace Sullinger.ValidatableBase.Converters
 {
-    public class IValidationMessageCollectionToStringCollectionConverter : IValueConverter
+    public class IMessageCollectionToStringCollectionConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

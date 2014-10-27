@@ -1,4 +1,4 @@
-﻿namespace Scionwest.Validatable.Models
+﻿namespace Sullinger.ValidatableBase.Models
 {
     /// <summary>
     /// Provides a contract for different message types to be stored during validation
