@@ -139,7 +139,6 @@ In the following example, we perform validation injection on the model. The view
             // We assign the reference to the view models, which contains an observable collection for the UI.
             if (this.AppUser.HasValidationMessages<ValidationErrorMessage>())
             {
-                this.ValidationMessages = this.AppUser.GetValidationMessages().ConvertValidationMessagesToObservable();
                 return;
             }
 
@@ -148,6 +147,57 @@ In the following example, we perform validation injection on the model. The view
         }
 
 ## Binding to the View
+
+The new version of ValidatableBase no longer stores the validation messages within an ObservableCollection. This is partly due to Portable Class Libraries (which allows ValidatableBase to be used on the widest range of platforms) does not support them. To work around this, I have provided an extension method that takes the model's validation message dictionary (`Dictionary<string, IEnumerable<IValidationMessage>>`) and converts it to a dictionary of observable messages (`Dictionary<string, ObservableCollection<IValidationMessage>>`).
+
+Anytime validation on the model is changed (such as a `ValidateAll()` invocation) you can re-assign the view models validation collection using the extension method, notifying the UI of validation changes as needed.
+
+        public MainPageViewModel()
+        {
+            this.AppUser = new User();
+            this.ValidationMessages = this.AppUser.GetValidationMessages().ConvertValidationMessagesToObservable();
+        }
+                
+        /// <summary>
+        /// A wrapper around the non-observable collection of validation messages stored in our model.
+        /// </summary>
+        public Dictionary<string, ObservableCollection<IValidationMessage>> ValidationMessages
+        {
+            get
+            {
+                return this.validationMessages;
+            }
+
+            private set
+            {
+                this.validationMessages = value;
+                this.OnPropertyChanged("ValidationMessages");
+            }
+        }
+        
+        public void Execute(object parameter)
+        {
+            // Perform validation on the user's built in validation.
+            this.AppUser.ValidateAll();
+
+            // Check if there are any errors.
+            // We assign the reference to the view models, which contains an observable collection for the UI.
+            if (this.AppUser.HasValidationMessages<ValidationErrorMessage>())
+            {
+                // Update our UI with new validation errors.
+                this.ValidationMessages = this.AppUser.GetValidationMessages().ConvertValidationMessagesToObservable();
+                return;
+            }
+            else
+            {
+                // Clear out each observable collection.
+                this.ValidationMessages.AsParallel().ForAll(item => item.Value.Clear());
+            }
+
+            // Do stuff.
+        }
+        
+The view is then data-bound to this property for fetching validation information.
 
 Binding to the view is really easy, using one of the two provided converters.
 
@@ -159,13 +209,13 @@ Binding to the view is really easy, using one of the two provided converters.
 ### Bind to a single error for a property.
 
     <TextBlock x:Name="EmailValidationErrorTextBlock"
-                Text="{Binding Path=AppUser.ValidationMessages[Email], 
+                Text="{Binding Path=ValidationMessages[Email], 
 								Converter={StaticResource ValidationCollectionToSingleStringConverter}}"
                 Foreground="Red" />
 
 ### Bind to the entire collection of errors for a property
 
-    <ItemsControl ItemsSource="{Binding Path=AppUser.ValidationMessages[Password], 
+    <ItemsControl ItemsSource="{Binding Path=ValidationMessages[Password], 
 										Converter={StaticResource CollectionConverter}}">
         <ItemsControl.ItemTemplate>
             <DataTemplate>
