@@ -32,10 +32,23 @@ namespace SampleUniversalApp.Models
         /// </summary>
         private string password = string.Empty;
 
+        public Bank Account {get;set;}
+
         /// <summary>
         /// Raised when a property has changed
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Gets or sets the users current balance. 
+        /// If the balance falls below the bank minimum required, a warning is generated. Only applicable if the user has an open account.
+        /// </summary>
+        [ValidateNumberIsGreaterThan(
+            ComparisonProperty = "Account.MinimumBalance",
+            FailureMessage = "You can not withdraw anymore, you must maintain a minimum balance.",
+            ValidationMessageType = typeof(ValidationWarningMessage),
+            ValidateIfMemberValueIsValid = "Account.IsOpen")]
+        public int CurrentBalance { get; set; }
 
         /// <summary>
         /// Gets or sets the Email.
