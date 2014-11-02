@@ -5,7 +5,7 @@ Model Validation for Universal WinRT Apps through delegate method invocation per
 
 ### Documentation added
 
-Check out the [[new documentation added to the wiki|https://github.com/scionwest/ValidatableBase/wiki]]. Basic and advance use-cases using ValidatableBase
+Check out the [new documentation added to the wiki](https://github.com/scionwest/ValidatableBase/wiki). Basic and advance use-cases using ValidatableBase
 
 ValidatableBase Version 2.0 Released
 ------------------------------------
