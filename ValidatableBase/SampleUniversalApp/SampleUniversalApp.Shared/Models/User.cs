@@ -14,6 +14,7 @@ namespace SampleUniversalApp.Models
     using System.Text;
     using Sullinger.ValidatableBase.Models;
     using Sullinger.ValidatableBase.Models.ValidationRules;
+    using System.Text.RegularExpressions;
 
     /// <summary>
     /// The model used to hold a user email and password.
@@ -39,10 +40,10 @@ namespace SampleUniversalApp.Models
         /// <summary>
         /// Gets or sets the Email.
         /// </summary>
-        [ValidateObjectHasValue(FailureMessage = "E-Mail can not be left blank.", 
+        [ValidateObjectHasValue(FailureMessage = "E-Mail can not be left blank.",
             ValidationMessageType = typeof(ValidationErrorMessage))]
-        [ValidateWithCustomHandler(DelegateName = "ValidateEmailFormat", 
-            ValidationMessageType = typeof(ValidationErrorMessage), 
+        [ValidateWithCustomHandler(DelegateName = "ValidateEmailFormat",
+            ValidationMessageType = typeof(ValidationErrorMessage),
             FailureMessage = "Email address is not properly formatted.")]
         public string Email
         {
@@ -61,13 +62,17 @@ namespace SampleUniversalApp.Models
         /// <summary>
         /// Gets or sets the Password.
         /// </summary>      
-        [ValidateStringIsGreaterThan(GreaterThanValue = 6, 
-            ValidateIfMemberValueIsValid = "Email",  
-            FailureMessage = "Password must be greater than 6 characters.", 
+        [ValidateStringIsGreaterThan(GreaterThanValue = 6,
+            ValidateIfMemberValueIsValid = "Email",
+            FailureMessage = "Password must be greater than 6 characters.",
             ValidationMessageType = typeof(ValidationErrorMessage))]
-        [ValidateStringIsLessThan(LessThanValue = 20, 
-            ValidateIfMemberValueIsValid = "Email", 
-            FailureMessage = "Password must be less than 20 characters.", 
+        [ValidateStringIsLessThan(LessThanValue = 20,
+            ValidateIfMemberValueIsValid = "Email",
+            FailureMessage = "Password must be less than 20 characters.",
+            ValidationMessageType = typeof(ValidationErrorMessage))]
+        [ValidateWithCustomHandler(
+            DelegateName = "IsPasswordCorrectlyFormatted",
+            FailureMessage = "Passwords can not use special characters",
             ValidationMessageType = typeof(ValidationErrorMessage))]
         public string Password
         {
@@ -81,6 +86,16 @@ namespace SampleUniversalApp.Models
                 this.password = value;
                 this.OnPropertyChanged("Password");
             }
+        }
+
+        [ValidationCustomHandlerDelegate(DelegateName = "IsPasswordCorrectlyFormatted")]
+        private IValidationMessage ValidatePasswordFormat(IValidationMessage failureMessage, PropertyInfo property)
+        {
+            string regExp = @"^[a-zA-Z0-9\s]+$";
+
+            return Regex.IsMatch(this.Password, regExp)
+                ? null
+                : failureMessage;
         }
 
         /// <summary>

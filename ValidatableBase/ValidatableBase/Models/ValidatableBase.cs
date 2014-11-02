@@ -258,6 +258,10 @@ namespace Sullinger.ValidatableBase.Models
             var cache = ValidatableBase.PropertyValidationCache[this.GetType()];
             PropertyInfo property = cache.Keys.FirstOrDefault(p => p.Name.Equals(propertyName));
 
+            if (property == null)
+            {
+                throw new ArgumentException("The provided property does not contain any validation rules.", "propertyName");
+            }
             foreach (IValidationRule rule in cache[property])
             {
                 this.PerformValidation(rule, property);
