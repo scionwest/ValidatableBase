@@ -3,6 +3,10 @@ ValidatableBase
 
 Model Validation for Universal WinRT Apps through delegate method invocation per-property or DataAnnotation styled attribute validation. Universal WinRT apps targeting Windows 8.1 and Windows Phone 8.1 lack built in, easy to use data Validation, so ValidatableBase was created.
 
+### Documentation added
+
+Check out the [[new documentation added to the wiki|https://github.com/scionwest/ValidatableBase/wiki]]. Basic and advance use-cases using ValidatableBase
+
 ValidatableBase Version 2.0 Released
 ------------------------------------
 
