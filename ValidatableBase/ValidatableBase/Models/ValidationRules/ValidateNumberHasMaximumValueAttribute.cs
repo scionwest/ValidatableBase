@@ -46,6 +46,9 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
             {
                 return null;
             }
+            
+              if (!string.IsNullOrWhiteSpace(this.FailureMessageResourceName))
+                this.FailureMessage = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse().GetString(this.FailureMessageResourceName);
 
             var validationMessage =
                 Activator.CreateInstance(this.ValidationMessageType, this.FailureMessage) as IValidationMessage;
