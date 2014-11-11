@@ -33,6 +33,9 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
             {
                 return null;
             }
+            
+            if (!string.IsNullOrWhiteSpace(this.FailureMessageResourceName))
+                this.FailureMessage = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse().GetString(this.FailureMessageResourceName);
 
             // Create an instance of our validation message and return it if there is not a delegate specified.
             IValidationMessage validationMessage = Activator.CreateInstance(this.ValidationMessageType, this.FailureMessage) as IValidationMessage;
