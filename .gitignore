@@ -172,3 +172,4 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+ValidatableBase/SampleUniversalApp/SampleUniversalApp.Shared/Settings.StyleCop
