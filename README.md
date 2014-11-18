@@ -1,5 +1,6 @@
 ValidatableBase
 ===============
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/scionwest/ValidatableBase?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Model Validation for Universal WinRT Apps through delegate method invocation per-property or DataAnnotation styled attribute validation. Universal WinRT apps targeting Windows 8.1 and Windows Phone 8.1 lack built in, easy to use data Validation, so ValidatableBase was created.
 
