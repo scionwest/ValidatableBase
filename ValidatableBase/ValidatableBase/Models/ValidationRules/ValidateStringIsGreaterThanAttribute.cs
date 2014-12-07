@@ -50,19 +50,19 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
             if (!string.IsNullOrEmpty(this.ComparisonProperty))
             {
                 // Fetch the value of the secondary property specified.
-                object result = this.GetComparisonValue(sender, this.ComparisonProperty);
+                object secondaryPropertyValue = this.GetComparisonValue(sender, this.ComparisonProperty);
 
-                if (result != null && !(result is string))
+                if (secondaryPropertyValue != null && !(secondaryPropertyValue is string))
                 {
                     int output = 0;
-                    if (int.TryParse(result.ToString(), NumberStyles.Integer, null, out output))
+                    if (int.TryParse(secondaryPropertyValue.ToString(), NumberStyles.Integer, null, out output))
                     {
                         this.GreaterThanValue = output;
                     }
                 }
-				else if (result != null && result is string)
+                else if (secondaryPropertyValue != null && secondaryPropertyValue is string)
                 {
-                    this.GreaterThanValue = result.ToString().Length;
+                    this.GreaterThanValue = secondaryPropertyValue.ToString().Length;
                 }
             }
 
@@ -73,12 +73,13 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
 
             // While we do convert it to a string below, we want to make sure that the actual Type is a string
             // so that we are not doing a string length comparison check on ToString() of a concrete Type that is not a string.
+            IValidationMessage result = null;
             if (value is string)
             {
-                return (this.GreaterThanValue > value.ToString().Length || value.ToString().Length == 0) ? validationMessage : null;
+                result = (this.GreaterThanValue > value.ToString().Length || value.ToString().Length == 0) ? validationMessage : null;
             }
 
-            return validationMessage;
+            return this.RunInterceptedValidation(sender, property, result);
         }
     }
 }

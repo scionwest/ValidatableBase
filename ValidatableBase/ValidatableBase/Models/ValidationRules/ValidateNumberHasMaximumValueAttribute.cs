@@ -71,32 +71,33 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
                 alternateProperty = this.GetComparisonValue(sender, this.ComparisonProperty);
             }
 
+            IValidationMessage result = null;
             if (this.numberDataType == ValidationNumberDataTypes.Short)
             {
-                return ValidateMinimumShortValue(propertyValue, alternateProperty, validationMessage);
+                result = ValidateMinimumShortValue(propertyValue, alternateProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Int)
             {
-                return this.ValidateMinimumIntegerValue(propertyValue, alternateProperty, validationMessage);
+                result = this.ValidateMinimumIntegerValue(propertyValue, alternateProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Long)
             {
-                return this.ValidateMinimumLongValue(propertyValue, alternateProperty, validationMessage);
+                result = this.ValidateMinimumLongValue(propertyValue, alternateProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Float)
             {
-                return this.ValidateMinimumFloatValue(propertyValue, alternateProperty, validationMessage);
+                result = this.ValidateMinimumFloatValue(propertyValue, alternateProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Double)
             {
-                return this.ValidateMinimumDoubleValue(propertyValue, alternateProperty, validationMessage);
+                result = this.ValidateMinimumDoubleValue(propertyValue, alternateProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Decimal)
             {
-                return this.ValidateMinimumDecimalValue(propertyValue, alternateProperty, validationMessage);
+                result = this.ValidateMinimumDecimalValue(propertyValue, alternateProperty, validationMessage);
             }
 
-            return validationMessage;
+            return this.RunInterceptedValidation(sender, property, result);
         }
 
         /// <summary>

@@ -74,32 +74,33 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
                 alternateProperty = this.GetComparisonValue(sender, this.ComparisonProperty);
             }
 
+            IValidationMessage result = null;
             if (this.numberDataType == ValidationNumberDataTypes.Short)
             {
-                return ValidateShortValueIsGreaterThan(propertyValue, alternateProperty, validationMessage);
+                result = ValidateShortValueIsGreaterThan(propertyValue, alternateProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Int)
             {
-                return this.ValidateIntegerValueIsGreaterThan(propertyValue, alternateProperty, validationMessage);
+                result = this.ValidateIntegerValueIsGreaterThan(propertyValue, alternateProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Long)
             {
-                return this.ValidateLongValueIsGreaterThan(propertyValue, alternateProperty, validationMessage);
+                result = this.ValidateLongValueIsGreaterThan(propertyValue, alternateProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Float)
             {
-                return this.ValidateFloatValueIsGreaterThan(propertyValue, alternateProperty, validationMessage);
+                result = this.ValidateFloatValueIsGreaterThan(propertyValue, alternateProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Double)
             {
-                return this.ValidateDoubleValueIsGreaterThan(propertyValue, alternateProperty, validationMessage);
+                result = this.ValidateDoubleValueIsGreaterThan(propertyValue, alternateProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Decimal)
             {
-                return this.ValidateDecimalValueIsGreaterThan(propertyValue, alternateProperty, validationMessage);
+                result = this.ValidateDecimalValueIsGreaterThan(propertyValue, alternateProperty, validationMessage);
             }
 
-            return validationMessage;
+            return this.RunInterceptedValidation(sender, property, result);
         }
 
         /// <summary>

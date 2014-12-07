@@ -30,26 +30,29 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
             var validationMessage = Activator.CreateInstance(this.ValidationMessageType, this.FailureMessage) as IValidationMessage;
             var value = property.GetValue(sender, null);
 
+            IValidationMessage result = null;
             if (value is string)
             {
-                return string.IsNullOrWhiteSpace(value.ToString()) ? validationMessage : null;
+                result = string.IsNullOrWhiteSpace(value.ToString()) ? validationMessage : null;
             }
             else if (value is IEnumerable)
             {
                 if (value is ICollection)
                 {
-                    return (value as ICollection).Count > 0 ? null : validationMessage;
+                    result = (value as ICollection).Count > 0 ? null : validationMessage;
                 }
                 else
                 {
                     // Only perform the cast if the underlying Type is not an ICollection.
-                    return (value as IEnumerable<object>).Any() ? null : validationMessage;
+                    result = (value as IEnumerable<object>).Any() ? null : validationMessage;
                 }
             }
             else
             {
-                return value == null ? validationMessage : null;
+                result = value == null ? validationMessage : null;
             }
+
+            return this.RunInterceptedValidation(sender, property, result);
         }
     }
 }

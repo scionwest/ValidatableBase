@@ -96,32 +96,33 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
                 alternateMinProperty = this.GetComparisonValue(sender, this.MinimumComparisonProperty);
             }
 
+            IValidationMessage result = null;
             if (this.numberDataType == ValidationNumberDataTypes.Short)
             {
-                return ValidateShortValueInRange(propertyValue, alternateMaxProperty, alternateMinProperty, validationMessage);
+                result = ValidateShortValueInRange(propertyValue, alternateMaxProperty, alternateMinProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Int)
             {
-                return this.ValidateIntegerInRange(propertyValue, alternateMaxProperty, alternateMinProperty, validationMessage);
+                result = this.ValidateIntegerInRange(propertyValue, alternateMaxProperty, alternateMinProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Long)
             {
-                return this.ValidateLongInRange(propertyValue, alternateMaxProperty, alternateMinProperty, validationMessage);
+                result = this.ValidateLongInRange(propertyValue, alternateMaxProperty, alternateMinProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Float)
             {
-                return this.ValidateFloatInRange(propertyValue, alternateMaxProperty, alternateMinProperty, validationMessage);
+                result = this.ValidateFloatInRange(propertyValue, alternateMaxProperty, alternateMinProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Double)
             {
-                return this.ValidateDoubleInRange(propertyValue, alternateMaxProperty, alternateMinProperty, validationMessage);
+                result = this.ValidateDoubleInRange(propertyValue, alternateMaxProperty, alternateMinProperty, validationMessage);
             }
             else if (this.numberDataType == ValidationNumberDataTypes.Decimal)
             {
-                return this.ValidateDecimalInRange(propertyValue, alternateMaxProperty, alternateMinProperty, validationMessage);
+                result = this.ValidateDecimalInRange(propertyValue, alternateMaxProperty, alternateMinProperty, validationMessage);
             }
 
-            return validationMessage;
+            return this.RunInterceptedValidation(sender, property, result);
         }
 
         /// <summary>

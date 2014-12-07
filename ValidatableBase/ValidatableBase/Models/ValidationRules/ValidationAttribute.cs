@@ -36,6 +36,14 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
         public string ValidateIfMemberValueIsValid { get; set; }
 
         /// <summary>
+        /// Gets or sets the method delegate that can intercept validation.
+        /// </summary>
+        /// <value>
+        /// The interception delegate.
+        /// </value>
+        public string InterceptionDelegate { get; set; }
+
+        /// <summary>
         /// Validates the specified property.
         /// </summary>
         /// <param name="property">The property that will its value validated.</param>
@@ -102,6 +110,30 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
             }
 
             return evaluateInverseValue ? !result : result;
+        }
+
+        /// <summary>
+        /// Runs the delegate specified to intercept validation.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="property">The property.</param>
+        /// <param name="message">The message.</param>
+        /// <returns></returns>
+        protected IValidationMessage RunInterceptedValidation(IValidatable sender, PropertyInfo property, IValidationMessage message)
+        {
+            if (string.IsNullOrWhiteSpace(this.InterceptionDelegate))
+            {
+                return message;
+            }
+
+            var delegateValidationRule = new ValidateWithCustomHandlerAttribute
+            {
+                DelegateName = this.InterceptionDelegate,
+                FailureMessage = message == null ? string.Empty : message.Message,
+                ValidationMessageType = message == null ? null : message.GetType(),
+            };
+
+            return delegateValidationRule.Validate(property, sender);
         }
 
         /// <summary>
