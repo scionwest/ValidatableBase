@@ -8,21 +8,37 @@ Model Validation for Universal WinRT Apps through delegate method invocation per
 
 Check out the [new documentation added to the wiki](https://github.com/scionwest/ValidatableBase/wiki). Basic and advance use-cases using ValidatableBase
 
-ValidatableBase Version 2.0 Released
+ValidatableBase Version 2.1 Released
 ------------------------------------
 
-* With this release, a new DataAnnotation styled attribute validation system has been added.
-* Registering properties is no longer needed.
-* The library is now in a Portable Class Library, usable across all platforms that PCL's can run on. 
-  *   As a side-effect of this, the validation messages collection is no longer directly exposed. The underlying implementation is `Dictionary<string, IEnumerable<IValidationMessage>>` which requires conversion if you need to bind to the validation results. The example app includes an extension method that can be used to perform the conversion, for view models that want to expose validation to the view.
-* ValidatableBase now has a ValidationChanged event that you can subscribe to. Any time validation is changed, either by adding/removing messages or running validation, your view models can be notified.
+Added validation interception support. You may now have the built-in validation rules invoke a delegate method. This provides you with a little more flexibility when performing validation. You may piggy back on top of existing rules for minor checks instead of resorting to a full delegate validation method.
 
 An example model, providing validation making sure the email property is not blank.
 
-    public class User : ValidatableBase, INotifyPropertyChanged
+    public class Bank
     {
-        [ValidateObjectHasValue(FailureMessage = "E-Mail can not be left blank.", ValidationMessageType = typeof(ValidationErrorMessage))]
-        public string Email { get; set; }
+        public const decimal MinimumBalance = 2000M;
+        
+        [ValidateObjectHasValue(
+            FailureMessage = "The bank must be open.",
+            ValidationMessageType = typeof(ValidationErrorMessage),
+            InterceptionDelegate = "Validate its not sunday")]
+        public bool IsOpen { get; set; }
+        
+        [ValidationCustomHandlerDelegate(DelegateName = "Validate its not sunday")]
+        public IValidationMessage IsOpenValidationIntercept(IValidationMessage failureMessage, PropertyInfo property)
+        {
+            // Is Open is allowed to be false on Sundays.
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+            {
+                return null;
+            }
+            
+            // It's not sunday, so return the failure message generated
+            // by the attribute.
+            return failureMessage;
+        }
+    }
 
 ## Advanced Example validating multiple business rules on a property, for multiple properties.
 
