@@ -26,6 +26,14 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
         /// The failure message.
         /// </value>
         public string FailureMessage { get; set; }
+        
+         /// <summary>
+        /// Gets or sets the resource name failure messsage
+        /// </summary>
+        /// <value>
+        /// resource name 
+        /// </value>
+        public string FailureMessageResourceName { get; set; }
 
         /// <summary>
         /// Gets or sets whether this validation will run. If the target property specified is true, then validation runs.
