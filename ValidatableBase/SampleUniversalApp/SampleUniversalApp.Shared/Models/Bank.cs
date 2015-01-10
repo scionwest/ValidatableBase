@@ -12,7 +12,7 @@ namespace SampleUniversalApp.Models
         public const decimal MinimumBalance = 2000M;
 
         [ValidateObjectHasValue(
-            FailureMessage = "The bank must be open.",
+            LocalizationKey = "Bank-IsOpen-Validation-Failure",
             ValidationMessageType = typeof(ValidationErrorMessage),
             InterceptionDelegate = "Validate its not sunday")]
         public bool IsOpen { get; set; }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using ValidatableBase;
 
 namespace Sullinger.ValidatableBase.Models.ValidationRules
 {
@@ -14,33 +15,28 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
         /// <summary>
         /// Gets or sets the type that will be used to create a IMessage instance.
         /// </summary>
-        /// <value>
-        /// The type of the validation message.
-        /// </value>
         public Type ValidationMessageType { get; set; }
 
         /// <summary>
         /// Gets or sets the failure message.
         /// </summary>
-        /// <value>
-        /// The failure message.
-        /// </value>
         public string FailureMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the key used to look up the localization text.
+        /// When a key is specified, the FailureMessage property will be assigned the 
+        /// resule of the localization value look-up.
+        /// </summary>
+        public string LocalizationKey { get; set; }
 
         /// <summary>
         /// Gets or sets whether this validation will run. If the target property specified is true, then validation runs.
         /// </summary>
-        /// <value>
-        /// The enable validation from property boolean.
-        /// </value>
         public string ValidateIfMemberValueIsValid { get; set; }
 
         /// <summary>
         /// Gets or sets the method delegate that can intercept validation.
         /// </summary>
-        /// <value>
-        /// The interception delegate.
-        /// </value>
         public string InterceptionDelegate { get; set; }
 
         /// <summary>
@@ -50,6 +46,32 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
         /// <param name="sender">The sender who owns the property.</param>
         /// <returns>Returns a validation message if validation failed. Otherwise null is returned to indicate a passing validation.</returns>
         public abstract IValidationMessage Validate(PropertyInfo property, IValidatable sender);
+
+        public void PrepareLocalization()
+        {
+            // If we don't have a localization key specified, then return.
+            if (string.IsNullOrWhiteSpace(this.LocalizationKey))
+            {
+                return;
+            }
+
+            // Fetch the service from the factory.
+            IValidationLocalizationService localizationService = 
+                ValidationLocalizationFactory.CreateService();
+
+            // If we have a service, fetch and assign the localized failure message.
+            if (localizationService != null)
+            {
+                string message = localizationService.GetLocalizedMessage(this.LocalizationKey);
+
+                // Only replace the failure message if we receive a valid localized message.
+                // This allows fallback values to be used while localization takes place.
+                if (!string.IsNullOrWhiteSpace(message))
+                {
+                    this.FailureMessage = message;
+                }
+            }
+        }
 
         /// <summary>
         /// Determines if the value specified in the ValidateIfMemberValueIsValue is a valid value.

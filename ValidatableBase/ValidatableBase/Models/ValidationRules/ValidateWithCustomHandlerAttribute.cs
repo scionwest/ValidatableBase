@@ -34,6 +34,9 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
                 return null;
             }
 
+            // Set up localization if available.
+            this.PrepareLocalization();
+
             // Create an instance of our validation message and return it if there is not a delegate specified.
             IValidationMessage validationMessage = Activator.CreateInstance(this.ValidationMessageType, this.FailureMessage) as IValidationMessage;
             if (string.IsNullOrEmpty(this.DelegateName))

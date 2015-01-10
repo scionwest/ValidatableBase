@@ -22,6 +22,11 @@ namespace SampleUniversalApp.Models
     /// </summary>
     public class User : ValidatableBase, INotifyPropertyChanged
     {
+        public User()
+        {
+            this.Account = new Bank();
+        }
+
         /// <summary>
         /// The Email backing field.
         /// </summary>
@@ -53,10 +58,14 @@ namespace SampleUniversalApp.Models
         /// <summary>
         /// Gets or sets the Email.
         /// </summary>
-        [ValidateObjectHasValue(FailureMessage = "E-Mail can not be left blank.",
+        [ValidateObjectHasValue(
+            LocalizationKey = "User-Email-Validation-Failure-Cannot-be-blank",
             ValidationMessageType = typeof(ValidationErrorMessage))]
-        [ValidateWithCustomHandler(DelegateName = "ValidateEmailFormat",
+        [ValidateWithCustomHandler(
+            DelegateName = "ValidateEmailFormat",
             ValidationMessageType = typeof(ValidationErrorMessage),
+            /* Key does not exist so validation falls back to the specified FailureMessage */
+            LocalizationKey = "User-Email-Validation-Failure-Invalid-Format",
             FailureMessage = "Email address is not properly formatted.")]
         public string Email
         {

@@ -47,6 +47,9 @@ namespace Sullinger.ValidatableBase.Models.ValidationRules
                 return null;
             }
 
+            // Set up localization if available.
+            this.PrepareLocalization();
+
             var validationMessage =
                 Activator.CreateInstance(this.ValidationMessageType, this.FailureMessage) as IValidationMessage;
 
