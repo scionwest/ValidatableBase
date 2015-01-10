@@ -8,6 +8,31 @@ Model Validation for Universal WinRT Apps through delegate method invocation per
 
 Check out the [new documentation added to the wiki](https://github.com/scionwest/ValidatableBase/wiki). Basic and advance use-cases using ValidatableBase
 
+ValidatableBase Version 2.2 Released
+------------------------------------
+
+Added localization support. This can be used across all-platforms providing you create a localization service implementing the new `IValidationLocalizationService` interface that returns a localized string from a resource based on a string key. Properties can then be validated with localized failure messages (and optional fallbacks) on all platforms.
+
+    [ValidateObjectHasValue(
+        /* fallback if localization does not exist for the key yet */
+        FailureMessage = "Email address can not be blank.",
+        /* If localized string exists for this key, it is assigned to the FailureMessage property */
+        LocalizationKey = "User-Email-Validation-Failure-Cannot-be-blank",
+        ValidationMessageType = typeof(ValidationErrorMessage))]
+    public string Email
+    {
+        get
+        {
+            return this.email;
+        }
+
+        set
+        {
+            this.email = value;
+            this.OnPropertyChanged("Email");
+        }
+    }
+
 ValidatableBase Version 2.1 Released
 ------------------------------------
 
